@@ -164,7 +164,7 @@ func (d *DetailScraper) ScrapeAnimeDetail(animeSlug string) (*models.AnimeDetail
 		var episodes []models.EpisodeListItem
 		e.ForEach("a", func(i int, el *colly.HTMLElement) {
 			ep := models.EpisodeListItem{
-				Episode:     fmt.Sprintf("%d", i+1),
+				Episode:     "", // Will be assigned after reversal
 				Title:       utils.CleanText(el.Text),
 				URL:         el.Attr("href"),
 				EpisodeSlug: utils.ExtractSlugFromURL(el.Attr("href")),
@@ -175,6 +175,10 @@ func (d *DetailScraper) ScrapeAnimeDetail(animeSlug string) (*models.AnimeDetail
 		// Reverse order
 		for i, j := 0, len(episodes)-1; i < j; i, j = i+1, j-1 {
 			episodes[i], episodes[j] = episodes[j], episodes[i]
+		}
+		// Assign episode numbers after reversal so they match the correct order
+		for i := range episodes {
+			episodes[i].Episode = fmt.Sprintf("%d", i+1)
 		}
 		response.EpisodeList = episodes
 	})
