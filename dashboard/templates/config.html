@@ -1,0 +1,257 @@
+{{ define "content" }}
+<div x-data="configData()" x-init="init()" x-cloak>
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Configuration Management</h1>
+        <p class="mt-1 text-sm text-gray-600">Update API configuration without restarting the server</p>
+    </div>
+
+    <!-- Alert Messages -->
+    <div x-show="alertMessage" x-transition class="mb-6">
+        <div :class="alertType === 'success' ? 'bg-green-50 border-green-400' : 'bg-red-50 border-red-400'" class="border-l-4 p-4">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg x-show="alertType === 'success'" class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <svg x-show="alertType === 'error'" class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <p :class="alertType === 'success' ? 'text-green-800' : 'text-red-800'" class="text-sm font-medium" x-text="alertMessage"></p>
+                </div>
+                <div class="ml-auto pl-3">
+                    <button @click="alertMessage = ''" class="inline-flex text-gray-400 hover:text-gray-500">
+                        <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Configuration Form -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-6">Scraping Settings</h3>
+            
+            <form @submit.prevent="updateConfig()" class="space-y-6">
+                <!-- Base URL -->
+                <div>
+                    <label for="base_url" class="block text-sm font-medium text-gray-700">
+                        Base URL
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <input type="url" 
+                               id="base_url" 
+                               x-model="config.base_url"
+                               class="flex-1 min-w-0 block w-full px-3 py-2 rounded-md border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border"
+                               placeholder="https://winbu.net"
+                               required>
+                        <button type="button" 
+                                @click="testURL()" 
+                                class="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Test
+                        </button>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-500">The target website URL for scraping</p>
+                    <p x-show="urlTestResult" class="mt-1 text-sm" :class="urlTestSuccess ? 'text-green-600' : 'text-red-600'" x-text="urlTestResult"></p>
+                </div>
+
+                <!-- Timeout -->
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    <div>
+                        <label for="timeout" class="block text-sm font-medium text-gray-700">Timeout</label>
+                        <select id="timeout" 
+                                x-model="config.timeout"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border">
+                            <option value="10s">10 seconds</option>
+                            <option value="20s">20 seconds</option>
+                            <option value="30s">30 seconds</option>
+                            <option value="45s">45 seconds</option>
+                            <option value="60s">60 seconds</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="rate_limit" class="block text-sm font-medium text-gray-700">Rate Limit</label>
+                        <select id="rate_limit" 
+                                x-model="config.rate_limit"
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border">
+                            <option value="500ms">0.5 seconds</option>
+                            <option value="1s">1 second</option>
+                            <option value="2s">2 seconds</option>
+                            <option value="3s">3 seconds</option>
+                            <option value="5s">5 seconds</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Cache Settings -->
+                <div class="border-t border-gray-200 pt-6">
+                    <h4 class="text-base font-medium text-gray-900 mb-4">Cache Settings</h4>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <input id="cache_enabled" 
+                                   type="checkbox" 
+                                   x-model="config.cache_enabled"
+                                   class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                            <label for="cache_enabled" class="ml-2 block text-sm text-gray-900">
+                                Enable caching
+                            </label>
+                        </div>
+
+                        <div x-show="config.cache_enabled">
+                            <label for="cache_ttl" class="block text-sm font-medium text-gray-700">Cache TTL</label>
+                            <select id="cache_ttl" 
+                                    x-model="config.cache_ttl"
+                                    class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md border">
+                                <option value="1m">1 minute</option>
+                                <option value="3m">3 minutes</option>
+                                <option value="5m">5 minutes</option>
+                                <option value="10m">10 minutes</option>
+                                <option value="30m">30 minutes</option>
+                                <option value="1h">1 hour</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between pt-6 border-t border-gray-200">
+                    <button type="button" 
+                            @click="resetToDefaults()"
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Reset to Defaults
+                    </button>
+                    <div class="flex space-x-3">
+                        <button type="button" 
+                                @click="fetchConfig()"
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                            Cancel
+                        </button>
+                        <button type="submit" 
+                                :disabled="saving"
+                                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50">
+                            <span x-show="!saving">Save Changes</span>
+                            <span x-show="saving">Saving...</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Current Active Config -->
+    <div class="mt-6 bg-gray-50 shadow rounded-lg p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Current Active Configuration</h3>
+        <pre class="bg-gray-800 text-gray-100 p-4 rounded-md overflow-x-auto text-sm" x-text="JSON.stringify(config, null, 2)"></pre>
+    </div>
+</div>
+
+<script>
+function configData() {
+    return {
+        config: {
+            base_url: '',
+            timeout: '30s',
+            rate_limit: '1s',
+            cache_enabled: true,
+            cache_ttl: '5m'
+        },
+        saving: false,
+        alertMessage: '',
+        alertType: '',
+        urlTestResult: '',
+        urlTestSuccess: false,
+
+        init() {
+            this.fetchConfig();
+        },
+
+        async fetchConfig() {
+            try {
+                const res = await fetch('/api/admin/config/current');
+                const data = await res.json();
+                
+                if (!data.error) {
+                    this.config = data.data;
+                }
+            } catch (error) {
+                this.showAlert('Error fetching config: ' + error.message, 'error');
+            }
+        },
+
+        async updateConfig() {
+            this.saving = true;
+            this.alertMessage = '';
+
+            try {
+                // Update each config
+                const updates = [
+                    { key: 'base_url', value: this.config.base_url },
+                    { key: 'timeout', value: this.config.timeout },
+                    { key: 'rate_limit', value: this.config.rate_limit },
+                    { key: 'cache_enabled', value: this.config.cache_enabled ? 'true' : 'false' },
+                    { key: 'cache_ttl', value: this.config.cache_ttl }
+                ];
+
+                for (const update of updates) {
+                    const res = await fetch(`/api/admin/config/${update.key}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ value: update.value })
+                    });
+
+                    const data = await res.json();
+                    if (data.error) {
+                        throw new Error(data.message);
+                    }
+                }
+
+                this.showAlert('Configuration updated successfully! Changes are now active.', 'success');
+                await this.fetchConfig();
+            } catch (error) {
+                this.showAlert('Error updating config: ' + error.message, 'error');
+            } finally {
+                this.saving = false;
+            }
+        },
+
+        async testURL() {
+            this.urlTestResult = 'Testing...';
+            try {
+                const res = await fetch(this.config.base_url, { method: 'HEAD', mode: 'no-cors' });
+                this.urlTestResult = '✓ URL is accessible';
+                this.urlTestSuccess = true;
+            } catch (error) {
+                this.urlTestResult = '✗ URL might not be accessible';
+                this.urlTestSuccess = false;
+            }
+        },
+
+        resetToDefaults() {
+            if (confirm('Reset all settings to defaults?')) {
+                this.config = {
+                    base_url: 'https://winbu.net',
+                    timeout: '30s',
+                    rate_limit: '1s',
+                    cache_enabled: true,
+                    cache_ttl: '5m'
+                };
+            }
+        },
+
+        showAlert(message, type) {
+            this.alertMessage = message;
+            this.alertType = type;
+            setTimeout(() => this.alertMessage = '', 5000);
+        }
+    }
+}
+</script>
+{{ end }}

@@ -21,9 +21,12 @@ func NewAnimeScraper(cfg *config.Config) *AnimeScraper {
 func (a *AnimeScraper) ScrapeAnimeTerbaru(page int) (*models.AnimeTerbaruResponse, error) {
 	c := utils.CreateCollectorWithRetry(a.config)
 
+	// Extract domain from config for source field
+	domain := utils.ExtractDomain(a.config.BaseURL)
+	
 	response := &models.AnimeTerbaruResponse{
 		BaseResponse: models.BaseResponse{
-			Source: "winbu.tv",
+			Source: domain,
 		},
 		Data: []models.AnimeTerbaruItem{},
 	}
@@ -116,3 +119,4 @@ func (a *AnimeScraper) ScrapeAnimeTerbaru(page int) (*models.AnimeTerbaruRespons
 
 	return response, nil
 }
+

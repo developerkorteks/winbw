@@ -1,6 +1,6 @@
-# Winbu.TV Web Scraping API
+# Winbu.NET Web Scraping API
 
-API web scraping untuk mengambil data dari situs Winbu.TV menggunakan Go dan Gin framework. API ini menyediakan endpoint untuk mengakses data anime, film, dan jadwal rilis dengan format JSON yang konsisten.
+API web scraping untuk mengambil data dari situs Winbu.NET menggunakan Go dan Gin framework. API ini menyediakan endpoint untuk mengakses data anime, film, dan jadwal rilis dengan format JSON yang konsisten.
 
 ## 🚀 Fitur Utama
 
@@ -62,7 +62,7 @@ go build -o api-server main.go
 ```bash
 export PORT=8080                    # Port server (default: 8080)
 export ENVIRONMENT=development      # Environment mode
-export BASE_URL=https://winbu.tv   # Base URL target
+export BASE_URL=https://winbu.net  # Base URL target
 export TIMEOUT=30s                 # Request timeout
 export RATE_LIMIT=1s               # Delay antar request
 export MAX_RETRIES=3               # Maximum retry attempts
@@ -93,34 +93,34 @@ GET /api/v1/home
 {
   "confidence_score": 1.0,
   "message": "Data berhasil diambil",
-  "source": "winbu.tv",
+  "source": "winbu.net",
   "top10": [
     {
       "judul": "One Piece",
-      "url": "https://winbu.tv/anime/one-piece/",
+      "url": "https://winbu.net/anime/one-piece/",
       "anime_slug": "one-piece",
       "rating": "8.71",
-      "cover": "https://winbu.tv/wp-content/uploads/2020/04/E5RxYkWX0AAwdGH.png.jpg",
+      "cover": "https://winbu.net/wp-content/uploads/2020/04/E5RxYkWX0AAwdGH.png.jpg",
       "genres": ["Anime"]
     }
   ],
   "new_eps": [
     {
       "judul": "Dandadan Season 2",
-      "url": "https://winbu.tv/anime/dandadan-season-2/",
+      "url": "https://winbu.net/anime/dandadan-season-2/",
       "anime_slug": "dandadan-season-2",
       "episode": "Episode 6",
       "rilis": "10 jam",
-      "cover": "https://winbu.tv/wp-content/uploads/2025/07/dandan.jpg"
+      "cover": "https://winbu.net/wp-content/uploads/2025/07/dandan.jpg"
     }
   ],
   "movies": [
     {
       "judul": "Overlord Movie 3",
-      "url": "https://winbu.tv/anime/overlord-movie-3/",
+      "url": "https://winbu.net/anime/overlord-movie-3/",
       "anime_slug": "overlord-movie-3",
       "tanggal": "Jun 4, 2021",
-      "cover": "https://winbu.tv/wp-content/uploads/2025/04/144101.jpg",
+      "cover": "https://winbu.net/wp-content/uploads/2025/04/144101.jpg",
       "genres": ["Action", "Adventure"]
     }
   ],
@@ -148,16 +148,16 @@ GET /api/v1/anime-terbaru?page=1
 {
   "confidence_score": 1.0,
   "message": "Data berhasil diambil",
-  "source": "winbu.tv",
+  "source": "winbu.net",
   "data": [
     {
       "judul": "Dandadan Season 2",
-      "url": "https://winbu.tv/anime/dandadan-season-2/",
+      "url": "https://winbu.net/anime/dandadan-season-2/",
       "anime_slug": "dandadan-season-2",
       "episode": "Episode 6",
       "uploader": "Unknown",
       "rilis": "10 jam",
-      "cover": "https://winbu.tv/wp-content/uploads/2025/07/dandan.jpg"
+      "cover": "https://winbu.net/wp-content/uploads/2025/07/dandan.jpg"
     }
   ]
 }
@@ -175,17 +175,17 @@ GET /api/v1/movie?page=1
 {
   "confidence_score": 0.9,
   "message": "Data berhasil diambil",
-  "source": "winbu.tv",
+  "source": "winbu.net",
   "data": [
     {
       "judul": "Overlord Movie 3",
-      "url": "https://winbu.tv/anime/overlord-movie-3/",
+      "url": "https://winbu.net/anime/overlord-movie-3/",
       "anime_slug": "overlord-movie-3",
       "status": "Completed",
       "skor": "7.80",
       "sinopsis": "Kerajaan Suci telah damai bertahun-tahun...",
       "views": "427583 Views",
-      "cover": "https://winbu.tv/wp-content/uploads/2025/04/144101.jpg",
+      "cover": "https://winbu.net/wp-content/uploads/2025/04/144101.jpg",
       "genres": ["Action", "Adventure", "Fantasy"],
       "tanggal": "N/A"
     }
@@ -202,7 +202,7 @@ GET /api/v1/jadwal-rilis
 {
   "confidence_score": 0.1,
   "message": "No schedule data found",
-  "source": "winbu.tv",
+  "source": "winbu.net",
   "Monday": [],
   "Tuesday": [],
   "Wednesday": [],
@@ -226,15 +226,15 @@ GET /api/v1/search?q=<string>&page=<int>
 {
   "confidence_score": 0.8,
   "message": "Data berhasil diambil",
-  "source": "winbu.tv",
+  "source": "winbu.net",
   "query": "one piece",
   "page": 1,
   "data": [
     {
       "judul": "One Piece",
-      "url": "https://winbu.tv/anime/one-piece/",
+      "url": "https://winbu.net/anime/one-piece/",
       "anime_slug": "one-piece",
-      "cover": "https://winbu.tv/wp-content/uploads/2020/04/E5RxYkWX0AAwdGH.png.jpg",
+      "cover": "https://winbu.net/wp-content/uploads/2020/04/E5RxYkWX0AAwdGH.png.jpg",
       "episode": "Episode 1120",
       "rating": "8.71",
       "type": "Anime"
@@ -309,4 +309,4 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 📞 Contact
 
-Project Link: [https://github.com/nabilulilalbab/winbu.tv](https://github.com/nabilulilalbab/winbu.tv)
+Project Link: [https://github.com/nabilulilalbab/winbu.net](https://github.com/nabilulilalbab/winbu.net)

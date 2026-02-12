@@ -1,0 +1,211 @@
+{{ define "content" }}
+<div x-data="dashboardData()" x-init="init()" x-cloak>
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Dashboard Overview</h1>
+        <p class="mt-1 text-sm text-gray-600">Monitor your WinbuNET API performance and health</p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- API Status -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">API Status</dt>
+                            <dd>
+                                <div class="text-lg font-medium text-gray-900" x-text="apiStatus"></div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Requests -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total Requests</dt>
+                            <dd>
+                                <div class="text-lg font-medium text-gray-900" x-text="totalRequests"></div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Rate -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Success Rate</dt>
+                            <dd>
+                                <div class="text-lg font-medium text-gray-900" x-text="successRate + '%'"></div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Avg Response Time -->
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Avg Response</dt>
+                            <dd>
+                                <div class="text-lg font-medium text-gray-900" x-text="avgResponseTime + 'ms'"></div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Config & Top Endpoints -->
+    <div class="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <!-- Current Configuration -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Current Configuration</h3>
+            <dl class="space-y-3">
+                <div class="flex justify-between">
+                    <dt class="text-sm font-medium text-gray-500">Base URL:</dt>
+                    <dd class="text-sm text-gray-900 font-mono" x-text="config.base_url"></dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="text-sm font-medium text-gray-500">Timeout:</dt>
+                    <dd class="text-sm text-gray-900" x-text="config.timeout"></dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="text-sm font-medium text-gray-500">Rate Limit:</dt>
+                    <dd class="text-sm text-gray-900" x-text="config.rate_limit"></dd>
+                </div>
+                <div class="flex justify-between">
+                    <dt class="text-sm font-medium text-gray-500">Cache:</dt>
+                    <dd class="text-sm text-gray-900" x-text="config.cache_enabled ? 'Enabled (' + config.cache_ttl + ')' : 'Disabled'"></dd>
+                </div>
+            </dl>
+            <div class="mt-4">
+                <a href="/dashboard/config" class="text-sm text-indigo-600 hover:text-indigo-500">
+                    Manage Configuration →
+                </a>
+            </div>
+        </div>
+
+        <!-- Top Endpoints -->
+        <div class="bg-white shadow rounded-lg p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Top Endpoints</h3>
+            <div class="flow-root">
+                <ul class="-my-5 divide-y divide-gray-200">
+                    <template x-for="endpoint in topEndpoints" :key="endpoint.endpoint">
+                        <li class="py-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate" x-text="endpoint.endpoint"></p>
+                                </div>
+                                <div>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800" x-text="endpoint.count + ' req'"></span>
+                                </div>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Refresh Button -->
+    <div class="mt-6 text-center">
+        <button @click="fetchData()" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+            <svg class="mr-2 -ml-1 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Refresh Data
+        </button>
+        <span class="ml-3 text-sm text-gray-500">Last updated: <span x-text="lastUpdated"></span></span>
+    </div>
+</div>
+
+<script>
+function dashboardData() {
+    return {
+        apiStatus: 'Loading...',
+        totalRequests: 0,
+        successRate: 0,
+        avgResponseTime: 0,
+        config: {},
+        topEndpoints: [],
+        lastUpdated: 'Never',
+
+        init() {
+            this.fetchData();
+            // Auto refresh every 30 seconds
+            setInterval(() => this.fetchData(), 30000);
+        },
+
+        async fetchData() {
+            try {
+                // Fetch metrics summary
+                const metricsRes = await fetch('/api/admin/metrics/summary');
+                const metricsData = await metricsRes.json();
+                
+                if (!metricsData.error) {
+                    this.totalRequests = metricsData.data.total_requests || 0;
+                    this.successRate = (metricsData.data.success_rate || 0).toFixed(1);
+                    this.avgResponseTime = (metricsData.data.avg_response_time_ms || 0).toFixed(0);
+                    this.topEndpoints = metricsData.data.top_endpoints || [];
+                }
+
+                // Fetch current config
+                const configRes = await fetch('/api/admin/config/current');
+                const configData = await configRes.json();
+                
+                if (!configData.error) {
+                    this.config = configData.data;
+                }
+
+                // Check API health
+                const healthRes = await fetch('/health');
+                this.apiStatus = healthRes.ok ? '🟢 Online' : '🔴 Offline';
+
+                this.lastUpdated = new Date().toLocaleTimeString();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                this.apiStatus = '🔴 Error';
+            }
+        }
+    }
+}
+</script>
+{{ end }}

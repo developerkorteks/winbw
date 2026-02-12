@@ -23,9 +23,12 @@ func NewScheduleScraper(cfg *config.Config) *ScheduleScraper {
 func (s *ScheduleScraper) ScrapeSchedule() (*models.ScheduleResponse, error) {
 	c := utils.CreateCollectorWithRetry(s.config)
 
+	// Extract domain from config for source field
+	domain := utils.ExtractDomain(s.config.BaseURL)
+	
 	response := &models.ScheduleResponse{
 		BaseResponse: models.BaseResponse{
-			Source: "winbu.tv",
+			Source: domain,
 		},
 		Data: models.ScheduleData{
 			Monday:    []models.ScheduleItem{},
@@ -320,9 +323,12 @@ func (s *ScheduleScraper) ScrapeScheduleByDay(day string) (*models.DayScheduleRe
 		return nil, err
 	}
 
+	// Extract domain from config for source field
+	domain := utils.ExtractDomain(s.config.BaseURL)
+	
 	response := &models.DayScheduleResponse{
 		BaseResponse: models.BaseResponse{
-			Source: "winbu.tv",
+			Source: domain,
 		},
 		Data: []models.ScheduleItem{},
 	}
@@ -358,3 +364,4 @@ func (s *ScheduleScraper) ScrapeScheduleByDay(day string) (*models.DayScheduleRe
 
 	return response, nil
 }
+

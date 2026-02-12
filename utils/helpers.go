@@ -5,6 +5,26 @@ import (
 	"strings"
 )
 
+// ExtractDomain extracts domain from URL (e.g., "https://winbu.net" -> "winbu.net")
+func ExtractDomain(baseURL string) string {
+	domain := baseURL
+	if len(domain) > 8 && domain[:8] == "https://" {
+		domain = domain[8:]
+	} else if len(domain) > 7 && domain[:7] == "http://" {
+		domain = domain[7:]
+	}
+	if len(domain) > 0 && domain[len(domain)-1] == '/' {
+		domain = domain[:len(domain)-1]
+	}
+	for i := 0; i < len(domain); i++ {
+		if domain[i] == '/' {
+			domain = domain[:i]
+			break
+		}
+	}
+	return domain
+}
+
 // CleanText removes extra whitespace and trims text
 func CleanText(text string) string {
 	re := regexp.MustCompile(`\s+`)

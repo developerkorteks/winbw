@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 	v1 "github.com/nabilulilalbab/winbu.tv/api/v1"
 	"github.com/nabilulilalbab/winbu.tv/config"
+	"github.com/nabilulilalbab/winbu.tv/dashboard"
+	"github.com/nabilulilalbab/winbu.tv/database"
 	"github.com/nabilulilalbab/winbu.tv/docs"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -31,7 +33,21 @@ import (
 // @schemes http https
 
 func main() {
-	// Load configuration
+	// Initialize database
+	dbPath := "winbu.db"
+	if err := database.Initialize(dbPath); err != nil {
+		log.Fatal("Failed to initialize database:", err)
+	}
+	defer database.Close()
+
+	// Initialize dynamic configuration
+	configStore := database.NewConfigStore()
+	dynamicConfig, err := config.InitDynamic(configStore)
+	if err != nil {
+		log.Fatal("Failed to initialize dynamic config:", err)
+	}
+
+	// Load configuration (for environment and port)
 	cfg := config.Load()
 
 	// Set Gin mode
@@ -94,7 +110,16 @@ func main() {
 
 	// API v1 routes
 	v1Group := r.Group("/api/v1")
-	v1.SetupRoutes(v1Group)
+	v1.SetupRoutes(v1Group, dynamicConfig)
+
+	// Dashboard/Admin API routes
+	apiGroup := r.Group("/api")
+	dashboard.SetupRoutes(apiGroup, dynamicConfig)
+
+	// Web Dashboard routes
+	if err := dashboard.SetupWebRoutes(r, dynamicConfig); err != nil {
+		log.Fatal("Failed to setup web routes:", err)
+	}
 
 	// Start server
 	port := os.Getenv("PORT")

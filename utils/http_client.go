@@ -10,9 +10,13 @@ import (
 
 // CreateCollector creates a new colly collector with standard settings
 func CreateCollector(cfg *config.Config) *colly.Collector {
+	// Extract domain from base URL
+	domain := ExtractDomain(cfg.BaseURL)
+	
 	c := colly.NewCollector(
-		colly.AllowedDomains("winbu.tv"),
+		colly.AllowedDomains(domain),
 		colly.UserAgent(cfg.UserAgent),
+		colly.CacheDir(""), // Disable cache to ensure fresh requests
 	)
 
 	// Set timeout
@@ -20,20 +24,23 @@ func CreateCollector(cfg *config.Config) *colly.Collector {
 
 	// Add rate limiting
 	c.Limit(&colly.LimitRule{
-		DomainGlob:  "*winbu.tv*",
+		DomainGlob:  "*" + domain + "*",
 		Parallelism: 1,
 		Delay:       cfg.RateLimit,
 	})
 
-	// Add debug if in development
-	if cfg.Environment == "development" {
-		c.OnRequest(func(r *colly.Request) {
-			log.Printf("Visiting: %s", r.URL.String())
-		})
-	}
+	// Add debug logging
+	c.OnRequest(func(r *colly.Request) {
+		log.Printf("[Scraper] Visiting %s with domain whitelist: %s", r.URL.String(), domain)
+	})
+	
+	c.OnError(func(r *colly.Response, err error) {
+		log.Printf("[Scraper] Error visiting %s: %v", r.Request.URL, err)
+	})
 
 	return c
 }
+
 
 // CreateCollectorWithRetry creates a collector with retry logic
 func CreateCollectorWithRetry(cfg *config.Config) *colly.Collector {

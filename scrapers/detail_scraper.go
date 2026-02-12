@@ -56,8 +56,11 @@ func (d *DetailScraper) ScrapeAnimeDetail(animeSlug string) (*models.AnimeDetail
 		return &cachedResponse, nil
 	}
 
+	// Extract domain from config
+	domain := utils.ExtractDomain(d.config.BaseURL)
+	
 	c := colly.NewCollector(
-		colly.AllowedDomains("winbu.tv"),
+		colly.AllowedDomains(domain),
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"),
 	)
 
@@ -65,7 +68,7 @@ func (d *DetailScraper) ScrapeAnimeDetail(animeSlug string) (*models.AnimeDetail
 		BaseResponse: models.BaseResponse{
 			Message:         "Success",
 			ConfidenceScore: 0.95,
-			Source:          "winbu.tv",
+			Source:          domain,
 		},
 		AnimeSlug:       animeSlug,
 		URL:             animeURL,
@@ -236,8 +239,11 @@ func (d *DetailScraper) ScrapeEpisodeDetail(episodeURL string) (*models.EpisodeD
 		return &cachedResponse, nil
 	}
 
+	// Extract domain from config
+	domain := utils.ExtractDomain(d.config.BaseURL)
+	
 	c := colly.NewCollector(
-		colly.AllowedDomains("winbu.tv"),
+		colly.AllowedDomains(domain),
 		colly.Async(true),
 	)
 	c.Limit(&colly.LimitRule{DomainGlob: "*", Parallelism: 8})
@@ -247,7 +253,7 @@ func (d *DetailScraper) ScrapeEpisodeDetail(episodeURL string) (*models.EpisodeD
 		BaseResponse: models.BaseResponse{
 			Message:         "Success",
 			ConfidenceScore: 0.95,
-			Source:          "winbu.tv",
+			Source:          domain,
 		},
 		StreamingServers: []models.StreamingServer{},
 		DownloadLinks: models.DownloadLinksGroup{
@@ -381,7 +387,7 @@ func (d *DetailScraper) ScrapeEpisodeDetail(episodeURL string) (*models.EpisodeD
 }
 
 func (d *DetailScraper) getStreamURL(postID, nume, dataType string) (string, error) {
-	ajaxURL := "https://winbu.tv/wp-admin/admin-ajax.php"
+	ajaxURL := "https://winbu.net/wp-admin/admin-ajax.php"
 	formData := url.Values{
 		"action": {"player_ajax"},
 		"post":   {postID},
@@ -397,7 +403,7 @@ func (d *DetailScraper) getStreamURL(postID, nume, dataType string) (string, err
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	req.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36")
 	req.Header.Add("X-Requested-With", "XMLHttpRequest")
-	req.Header.Add("Referer", "https://winbu.tv/")
+	req.Header.Add("Referer", "https://winbu.net/")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -448,3 +454,4 @@ func (d *DetailScraper) checkURLExists(url string) (bool, error) {
 
 	return resp.StatusCode == 200, nil
 }
+

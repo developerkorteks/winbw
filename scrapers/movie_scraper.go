@@ -22,9 +22,12 @@ func NewMovieScraper(cfg *config.Config) *MovieScraper {
 func (m *MovieScraper) ScrapeMovies(page int) (*models.MovieResponse, error) {
 	c := utils.CreateCollectorWithRetry(m.config)
 
+	// Extract domain from config for source field
+	domain := utils.ExtractDomain(m.config.BaseURL)
+	
 	response := &models.MovieResponse{
 		BaseResponse: models.BaseResponse{
-			Source: "winbu.tv",
+			Source: domain,
 		},
 		Data: []models.MovieDetailItem{},
 	}
@@ -153,3 +156,4 @@ func (m *MovieScraper) ScrapeMovies(page int) (*models.MovieResponse, error) {
 
 	return response, nil
 }
+

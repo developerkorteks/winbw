@@ -25,7 +25,7 @@ func Load() *Config {
 	return &Config{
 		Environment: getEnv("ENVIRONMENT", "development"),
 		Port:        getEnv("PORT", "8080"),
-		BaseURL:     getEnv("BASE_URL", "https://winbu.tv"),
+		BaseURL:     getEnv("BASE_URL", "https://winbu.net"),
 
 		// Scraping settings
 		UserAgent:  getEnv("USER_AGENT", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"),

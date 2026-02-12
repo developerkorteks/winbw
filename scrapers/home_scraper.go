@@ -35,9 +35,12 @@ func (h *HomeScraper) ScrapeHome() (*models.HomeResponse, error) {
 
 	c := utils.CreateCollectorWithRetry(h.config)
 
+	// Extract domain from config for source field
+	domain := utils.ExtractDomain(h.config.BaseURL)
+	
 	response := &models.HomeResponse{
 		BaseResponse: models.BaseResponse{
-			Source: "winbu.tv",
+			Source: domain,
 		},
 		Top10:  []models.Top10Item{},
 		NewEps: []models.NewEpisodeItem{},
@@ -422,3 +425,4 @@ func (h *HomeScraper) generateWeeklySchedule(allItems []models.ScheduleItem) mod
 
 	return schedule
 }
+

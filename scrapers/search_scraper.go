@@ -35,9 +35,12 @@ func (s *SearchScraper) SearchAnime(query string, page int) (*models.SearchRespo
 
 	c := utils.CreateCollectorWithRetry(s.config)
 
+	// Extract domain from config for source field
+	domain := utils.ExtractDomain(s.config.BaseURL)
+	
 	response := &models.SearchResponse{
 		BaseResponse: models.BaseResponse{
-			Source: "winbu.tv",
+			Source: domain,
 		},
 		Data: []models.SearchResultItem{},
 	}
@@ -175,3 +178,4 @@ func (s *SearchScraper) SearchAnime(query string, page int) (*models.SearchRespo
 
 	return response, nil
 }
+

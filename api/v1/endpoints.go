@@ -11,30 +11,17 @@ import (
 )
 
 type APIHandler struct {
-	config          *config.Config
-	homeScraper     *scrapers.HomeScraper
-	animeScraper    *scrapers.AnimeScraper
-	movieScraper    *scrapers.MovieScraper
-	scheduleScraper *scrapers.ScheduleScraper
-	searchScraper   *scrapers.SearchScraper
-	detailScraper   *scrapers.DetailScraper
+	dynamicConfig *config.DynamicConfig
 }
 
-func NewAPIHandler(cfg *config.Config) *APIHandler {
+func NewAPIHandler(dc *config.DynamicConfig) *APIHandler {
 	return &APIHandler{
-		config:          cfg,
-		homeScraper:     scrapers.NewHomeScraper(cfg),
-		animeScraper:    scrapers.NewAnimeScraper(cfg),
-		movieScraper:    scrapers.NewMovieScraper(cfg),
-		scheduleScraper: scrapers.NewScheduleScraper(cfg),
-		searchScraper:   scrapers.NewSearchScraper(cfg),
-		detailScraper:   scrapers.NewDetailScraper(cfg),
+		dynamicConfig: dc,
 	}
 }
 
-func SetupRoutes(r *gin.RouterGroup) {
-	cfg := config.Load()
-	handler := NewAPIHandler(cfg)
+func SetupRoutes(r *gin.RouterGroup, dc *config.DynamicConfig) {
+	handler := NewAPIHandler(dc)
 
 	r.GET("/home", handler.GetHome)
 	r.GET("/anime-terbaru", handler.GetAnimeTerbaru)
@@ -56,7 +43,11 @@ func SetupRoutes(r *gin.RouterGroup) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /api/v1/home [get]
 func (h *APIHandler) GetHome(c *gin.Context) {
-	data, err := h.homeScraper.ScrapeHome()
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	homeScraper := scrapers.NewHomeScraper(cfg)
+	
+	data, err := homeScraper.ScrapeHome()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:           true,
@@ -86,7 +77,11 @@ func (h *APIHandler) GetAnimeTerbaru(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := h.animeScraper.ScrapeAnimeTerbaru(page)
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	animeScraper := scrapers.NewAnimeScraper(cfg)
+	
+	data, err := animeScraper.ScrapeAnimeTerbaru(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:           true,
@@ -116,7 +111,11 @@ func (h *APIHandler) GetMovies(c *gin.Context) {
 		page = 1
 	}
 
-	data, err := h.movieScraper.ScrapeMovies(page)
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	movieScraper := scrapers.NewMovieScraper(cfg)
+	
+	data, err := movieScraper.ScrapeMovies(page)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:           true,
@@ -139,7 +138,11 @@ func (h *APIHandler) GetMovies(c *gin.Context) {
 // @Failure 500 {object} models.ErrorResponse
 // @Router /api/v1/jadwal-rilis [get]
 func (h *APIHandler) GetSchedule(c *gin.Context) {
-	data, err := h.scheduleScraper.ScrapeSchedule()
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	scheduleScraper := scrapers.NewScheduleScraper(cfg)
+	
+	data, err := scheduleScraper.ScrapeSchedule()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:           true,
@@ -174,7 +177,11 @@ func (h *APIHandler) GetSearch(c *gin.Context) {
 		return
 	}
 
-	data, err := h.searchScraper.SearchAnime(query, 1)
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	searchScraper := scrapers.NewSearchScraper(cfg)
+	
+	data, err := searchScraper.SearchAnime(query, 1)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:           true,
@@ -209,7 +216,11 @@ func (h *APIHandler) GetAnimeDetail(c *gin.Context) {
 		return
 	}
 
-	data, err := h.detailScraper.ScrapeAnimeDetail(animeSlug)
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	detailScraper := scrapers.NewDetailScraper(cfg)
+	
+	data, err := detailScraper.ScrapeAnimeDetail(animeSlug)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:           true,
@@ -228,7 +239,7 @@ func (h *APIHandler) GetAnimeDetail(c *gin.Context) {
 // @Tags Detail
 // @Accept json
 // @Produce json
-// @Param episode_url query string true "URL episode"
+// @Param episode_url query string true "Full URL episode (contoh: 'https://winbu.net/okiraku-ryoushu-no-tanoshii-ryouchi-bouei-episode-6/')"
 // @Success 200 {object} models.EpisodeDetailResponse
 // @Failure 400 {object} models.ErrorResponse
 // @Failure 500 {object} models.ErrorResponse
@@ -244,7 +255,11 @@ func (h *APIHandler) GetEpisodeDetail(c *gin.Context) {
 		return
 	}
 
-	data, err := h.detailScraper.ScrapeEpisodeDetail(episodeURL)
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	detailScraper := scrapers.NewDetailScraper(cfg)
+	
+	data, err := detailScraper.ScrapeEpisodeDetail(episodeURL)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.ErrorResponse{
 			Error:           true,
@@ -279,7 +294,11 @@ func (h *APIHandler) GetScheduleByDay(c *gin.Context) {
 		return
 	}
 
-	data, err := h.scheduleScraper.ScrapeScheduleByDay(day)
+	// Get fresh config and create scraper
+	cfg := h.dynamicConfig.Get()
+	scheduleScraper := scrapers.NewScheduleScraper(cfg)
+	
+	data, err := scheduleScraper.ScrapeScheduleByDay(day)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, models.ErrorResponse{
 			Error:           true,
