@@ -204,9 +204,9 @@ go test -v -run TestDetailPage ./scrape/
 go run main.go
 
 # 6. Test endpoint via curl
-curl http://localhost:8080/api/v1/anime-terbaru?page=1
-curl http://localhost:8080/api/v1/movie?page=1
-curl http://localhost:8080/api/v1/home
+curl http://localhost:59123/api/v1/anime-terbaru?page=1
+curl http://localhost:59123/api/v1/movie?page=1
+curl http://localhost:59123/api/v1/home
 ```
 
 ---

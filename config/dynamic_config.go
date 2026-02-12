@@ -58,7 +58,7 @@ func (dc *DynamicConfig) loadFromDatabase() error {
 	// Create config object
 	cfg := &Config{
 		Environment: getEnv("ENVIRONMENT", "development"),
-		Port:        getEnv("PORT", "8080"),
+		Port:        getEnv("PORT", "59123"),
 	}
 
 	// Load from database with fallback to defaults

@@ -229,14 +229,14 @@ winbutv/
 ### How to Update Config:
 
 **Option 1: Via Dashboard UI**
-1. Go to http://localhost:8080/dashboard/config
+1. Go to http://localhost:59123/dashboard/config
 2. Update values in the form
 3. Click "Save Changes"
 4. Changes apply immediately (no restart!)
 
 **Option 2: Via API**
 ```bash
-curl -X PUT http://localhost:8080/api/admin/config/base_url \
+curl -X PUT http://localhost:59123/api/admin/config/base_url \
   -H "Content-Type: application/json" \
   -d '{"value":"https://new-domain.com"}'
 ```
@@ -258,10 +258,10 @@ go run main.go
 ```
 
 ### Accessing Dashboard:
-1. **Main Dashboard:** http://localhost:8080/dashboard
-2. **Config Management:** http://localhost:8080/dashboard/config
-3. **API Documentation:** http://localhost:8080/swagger/
-4. **Health Check:** http://localhost:8080/health
+1. **Main Dashboard:** http://localhost:59123/dashboard
+2. **Config Management:** http://localhost:59123/dashboard/config
+3. **API Documentation:** http://localhost:59123/swagger/
+4. **Health Check:** http://localhost:59123/health
 
 ### Updating Configuration:
 1. Navigate to `/dashboard/config`

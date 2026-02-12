@@ -28,7 +28,7 @@ import (
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT
 
-// @host localhost:8002
+// @host localhost:59123
 // @BasePath /
 // @schemes http https
 
@@ -98,7 +98,7 @@ func main() {
 		doc := docs.SwaggerInfo.ReadDoc()
 
 		// Replace host and schemes dynamically (using correct patterns that match the generated JSON)
-		doc = strings.Replace(doc, `"host": "localhost:8002"`, `"host": "`+host+`"`, 1)
+		doc = strings.Replace(doc, `"host": "localhost:59123"`, `"host": "`+host+`"`, 1)
 		doc = strings.Replace(doc, `"schemes": ["http","https"]`, `"schemes": ["`+scheme+`"]`, 1)
 
 		c.Header("Content-Type", "application/json")

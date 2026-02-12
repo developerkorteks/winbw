@@ -24,7 +24,7 @@ type Config struct {
 func Load() *Config {
 	return &Config{
 		Environment: getEnv("ENVIRONMENT", "development"),
-		Port:        getEnv("PORT", "8080"),
+		Port:        getEnv("PORT", "59123"),
 		BaseURL:     getEnv("BASE_URL", "https://winbu.net"),
 
 		// Scraping settings

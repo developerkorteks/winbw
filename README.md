@@ -60,7 +60,7 @@ go build -o api-server main.go
 
 ### Konfigurasi Environment Variables
 ```bash
-export PORT=8080                    # Port server (default: 8080)
+export PORT=59123                    # Port server (default: 59123)
 export ENVIRONMENT=development      # Environment mode
 export BASE_URL=https://winbu.net  # Base URL target
 export TIMEOUT=30s                 # Request timeout

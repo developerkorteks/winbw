@@ -157,7 +157,7 @@ All endpoints now support dynamic configuration:
 
 ### Via Dashboard UI:
 ```
-1. Go to: http://localhost:8080/dashboard/config
+1. Go to: http://localhost:59123/dashboard/config
 2. Update "Base URL" field
 3. Click "Save Changes"
 4. ✨ Instant effect - no restart needed!
@@ -166,12 +166,12 @@ All endpoints now support dynamic configuration:
 ### Via API:
 ```bash
 # Update base URL
-curl -X PUT http://localhost:8080/api/admin/config/base_url \
+curl -X PUT http://localhost:59123/api/admin/config/base_url \
   -H "Content-Type: application/json" \
   -d '{"value":"https://new-domain.com"}'
 
 # Verify immediately
-curl http://localhost:8080/api/v1/anime-terbaru?page=1
+curl http://localhost:59123/api/v1/anime-terbaru?page=1
 # Will scrape from new-domain.com!
 ```
 
