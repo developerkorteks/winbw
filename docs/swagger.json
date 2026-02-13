@@ -19,7 +19,6 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8002",
     "basePath": "/",
     "paths": {
         "/api/v1/anime-detail": {
@@ -120,7 +119,7 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "URL episode",
+                        "description": "Full URL episode (contoh: 'https://winbu.net/okiraku-ryoushu-no-tanoshii-ryouchi-bouei-episode-6/')",
                         "name": "episode_url",
                         "in": "query",
                         "required": true

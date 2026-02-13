@@ -463,7 +463,6 @@ definitions:
       url:
         type: string
     type: object
-host: localhost:8002
 info:
   contact:
     email: support@swagger.io
@@ -539,7 +538,7 @@ paths:
       - application/json
       description: Mengambil detail episode termasuk server streaming dan link download
       parameters:
-      - description: URL episode
+      - description: 'Full URL episode (contoh: ''https://winbu.net/okiraku-ryoushu-no-tanoshii-ryouchi-bouei-episode-6/'')'
         in: query
         name: episode_url
         required: true

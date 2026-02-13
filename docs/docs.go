@@ -122,7 +122,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "URL episode",
+                        "description": "Full URL episode (contoh: 'https://winbu.net/okiraku-ryoushu-no-tanoshii-ryouchi-bouei-episode-6/')",
                         "name": "episode_url",
                         "in": "query",
                         "required": true
@@ -1050,7 +1050,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8002",
+	Host:             "",
 	BasePath:         "/",
 	Schemes:          []string{"http", "https"},
 	Title:            "Winbu.TV Web Scraping API",
